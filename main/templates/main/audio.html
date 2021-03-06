@@ -44,8 +44,12 @@
                 }
                 wavesurfer.seekTo(data.position);
                 if (data.isPlaying) {
+                    document.getElementById('play').classList.add('is-hidden');
+                    document.getElementById('pause').classList.remove('is-hidden');
                     wavesurfer.play();
                 } else {
+                    document.getElementById('play').classList.remove('is-hidden');
+                    document.getElementById('pause').classList.add('is-hidden');
                     wavesurfer.pause();
                 }
             };
