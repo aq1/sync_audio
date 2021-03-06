@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Sync Audio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF8">
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column">
+                <div id="waveform"></div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column is-6" style="text-align: center">
+                <button class="button is-primary is-light" onclick="play()" id="play">Play</button>
+                <button class="button is-primary is-hidden" onclick="play()" id="pause">Pause</button>
+                <button class="button is-warning is-light" onclick="skip(-10)">-10s</button>
+                <button class="button is-warning is-light" onclick="skip(10)">+10s</button>
+                <input id="volume" style="padding: 10px 0" step="0.001" min="0" max="1" value="0.5" type="range"
+                       oninput="volume(this.value)">
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var conn;
+    const _id = Math.round(Math.random() * 100000);
+    var seek;
+    window.onload = function () {
+        if (window["WebSocket"]) {
+            conn = new WebSocket("ws://" + document.location.host + "/ws");
+            conn.onmessage = function (evt) {
+                let data = JSON.parse(evt.data)
+                if (data.clientId === _id) {
+                    return;
+                }
+                wavesurfer.seekTo(data.position);
+                if (data.isPlaying) {
+                    wavesurfer.play();
+                } else {
+                    wavesurfer.pause();
+                }
+            };
+        }
+    };
+
+    let wavesurfer = WaveSurfer.create({
+        container: '#waveform',
+        normalize: true,
+        waveColor: '#d1d6da',
+        progressColor: '#3dbeb3',
+        barWidth: 2,
+        barRadius: 3,
+        barMinHeight: 2,
+        cursorWidth: 0,
+        partialRender: true,
+        responsive: true,
+    });
+    wavesurfer.load("{{ audio.audio.url }}");
+    wavesurfer.on('ready', () => {
+        wavesurfer.setVolume(parseFloat(document.getElementById('volume').value));
+    })
+
+    let play = () => {
+        wavesurfer.playPause();
+        document.getElementById('play').classList.toggle('is-hidden');
+        document.getElementById('pause').classList.toggle('is-hidden');
+        sendMessage();
+    };
+
+    let skip = (value) => {
+        wavesurfer.skip(value);
+        sendMessage();
+    };
+
+    let volume = (value) => {
+        wavesurfer.setVolume(value);
+    };
+
+    let sendMessage = function () {
+        setTimeout(() => {
+            conn.send(JSON.stringify({
+                'clientId': _id,
+                'isPlaying': wavesurfer.isPlaying(),
+                'position': wavesurfer.getCurrentTime() / wavesurfer.getDuration(),
+            }));
+        }, 100);
+    };
+
+    document.getElementById('waveform').onclick = () => sendMessage();
+</script>
+</body>
+
+</html>

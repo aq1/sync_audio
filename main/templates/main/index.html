@@ -2,77 +2,40 @@
 <html lang="en">
 
 <head>
-    <title>Chat Example</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sync Audio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF8">
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
 </head>
 
 <body>
-
-<script src="https://unpkg.com/wavesurfer.js"></script>
-
-<div id="waveform"></div>
-<div>
-    <button onclick="play()">play</button>
-</div>
-
-{% verbatim %}
-<script>
-    var conn;
-    const _id = Math.round(Math.random() * 100000);
-    var seek;
-    window.onload = function () {
-        if (window["WebSocket"]) {
-            conn = new WebSocket("ws://" + document.location.host + "/ws");
-            conn.onmessage = function (evt) {
-                let data = JSON.parse(evt.data)
-                if (data.clientId === _id) {
-                    return;
-                }
-                wavesurfer.seekTo(data.position);
-                if (data.isPlaying) {
-                    wavesurfer.play();
-                } else {
-                    wavesurfer.pause();
-                }
-            };
-        }
-    };
-
-    var wavesurfer = WaveSurfer.create({
-        container: '#waveform',
-        normalize: true,
-        waveColor: '#d1d6da',
-        progressColor: '#3dbeb3',
-        barWidth: 2,
-        barRadius: 3,
-        barMinHeight: 2,
-        cursorWidth: 0,
-        partialRender: true,
-        responsive: true,
-    });
-    wavesurfer.load('/a');
-    wavesurfer.setVolume(1);
-
-    var play = function () {
-        wavesurfer.playPause();
-        sendMessage();
-    };
-
-    let sendMessage = function () {
-        setTimeout(() => {
-            console.log(wavesurfer.isPlaying());
-            conn.send(JSON.stringify({
-                'clientId': _id,
-                'isPlaying': wavesurfer.isPlaying(),
-                'position': wavesurfer.getCurrentTime() / wavesurfer.getDuration(),
-            }));
-        }, 100);
-    };
-
-    document.getElementById('waveform').onclick = () => sendMessage();
-</script>
-{% endverbatim %}
+<section class="section">
+    <div class="columns is-centered">
+        <div class="column is-4"></div>
+        <div class="column is-4">
+            <form action="{% url 'upload' %}" method="post" id="form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="audio" onchange="this.form.submit()">
+{#                <div class="file is-large is-boxed" id="file" style="justify-content: center;">#}
+{#                    <label class="file-label">#}
+{#                        <input id="audio" class="file-input" type="file" name="audio" onchange="this.form.submit()">#}
+{#                        <span class="file-cta"><span class="file-label">Choose a file</span></span>#}
+{#                    </label>#}
+{#                </div>#}
+            </form>
+        </div>
+        <div class="column is-4">
+        </div>
+    </div>
+    <div class="columns is-centered">
+        <div class="column">
+            {% if errors %}
+                <pre>{{ errors }}</pre>
+            {% endif %}
+        </div>
+    </div>
+</section>
 </body>
 
 </html>
