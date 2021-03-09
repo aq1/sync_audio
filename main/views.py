@@ -5,8 +5,8 @@ from django.urls import reverse
 from .models import Audio
 
 
-def audio(request, audio_id):
-    _audio = get_object_or_404(Audio, slug=audio_id)
+def audio(request, audio_slug):
+    _audio = get_object_or_404(Audio, slug=audio_slug)
     return render(request, 'main/audio.html', {'audio': _audio})
 
 

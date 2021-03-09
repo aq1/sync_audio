@@ -17,3 +17,6 @@ class Audio(models.Model):
             slugify(' '.join(self.audio.name.split('.')[:-1]), allow_unicode=True),
         )
         return super().save(**kwargs)
+
+    def __str__(self):
+        return self.slug
