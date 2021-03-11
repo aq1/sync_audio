@@ -19,6 +19,9 @@
         </div>
         <div class="columns is-centered">
             <div class="column is-6" style="text-align: center">
+                <button class="button is-info is-light" onclick="speed(-0.1)">- Speed</button>
+                <button class="button is-info is-light" onclick="setSpeed(1)">Speed 100%</button>
+                <button class="button is-info is-light" onclick="speed(0.1)">+ Speed</button>
                 <button class="button is-primary is-light" onclick="play()" id="play">Play</button>
                 <button class="button is-primary is-hidden" onclick="play()" id="pause">Pause</button>
                 <button class="button is-warning is-light" onclick="skip(-10)">-10s</button>
@@ -43,6 +46,7 @@
                     return;
                 }
                 wavesurfer.seekTo(data.position);
+                wavesurfer.setPlaybackRate(data.speed);
                 if (data.isPlaying) {
                     document.getElementById('play').classList.add('is-hidden');
                     document.getElementById('pause').classList.remove('is-hidden');
@@ -85,6 +89,16 @@
         sendMessage();
     };
 
+    let speed = (value) => {
+        wavesurfer.setPlaybackRate(wavesurfer.getPlaybackRate() + value);
+        sendMessage();
+    };
+
+    let setSpeed = (value) => {
+        wavesurfer.setPlaybackRate(value);
+        sendMessage();
+    };
+
     let volume = (value) => {
         wavesurfer.setVolume(value);
     };
@@ -95,6 +109,7 @@
                 'clientId': _id,
                 'isPlaying': wavesurfer.isPlaying(),
                 'position': wavesurfer.getCurrentTime() / wavesurfer.getDuration(),
+                'speed': wavesurfer.getPlaybackRate(),
             }));
         }, 100);
     };
