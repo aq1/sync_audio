@@ -26,7 +26,7 @@ def upload(request):
     form = AudioForm(request.POST, request.FILES)
     if form.is_valid():
         _audio = form.save()
-        return redirect(reverse('audio', kwargs={'audio_id': _audio.slug}))
+        return redirect(reverse('audio', kwargs={'audio_slug': _audio.slug}))
 
     return render(
         request,
