@@ -7,7 +7,7 @@ from .models import Audio
 
 def audio(request, audio_slug):
     _audio = Audio.objects.filter(slug=audio_slug).first()
-    if not audio:
+    if not _audio:
         return redirect(reverse('index'))
 
     return render(request, 'main/audio.html', {'audio': _audio})
