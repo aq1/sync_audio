@@ -6,12 +6,16 @@ from .models import Audio
 
 
 def audio(request, audio_slug):
-    _audio = get_object_or_404(Audio, slug=audio_slug)
+    _audio = Audio.objects.filter(slug=audio_slug).first()
+    if not audio:
+        return redirect(reverse('index'))
+
     return render(request, 'main/audio.html', {'audio': _audio})
 
 
 def index(request):
-    return render(request, 'main/index.html')
+    audios = Audio.objects.all()
+    return render(request, 'main/index.html', {'audios': audios})
 
 
 class AudioForm(forms.ModelForm):

@@ -12,20 +12,12 @@
 <body>
 <section class="section">
     <div class="columns is-centered">
-        <div class="column is-4"></div>
         <div class="column is-4">
+            <h1 class="title">Загрузите аудио</h1>
             <form action="{% url 'upload' %}" method="post" id="form" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="file" name="audio" onchange="this.form.submit()">
-{#                <div class="file is-large is-boxed" id="file" style="justify-content: center;">#}
-{#                    <label class="file-label">#}
-{#                        <input id="audio" class="file-input" type="file" name="audio" onchange="this.form.submit()">#}
-{#                        <span class="file-cta"><span class="file-label">Choose a file</span></span>#}
-{#                    </label>#}
-{#                </div>#}
             </form>
-        </div>
-        <div class="column is-4">
         </div>
     </div>
     <div class="columns is-centered">
@@ -33,6 +25,20 @@
             {% if errors %}
                 <pre>{{ errors }}</pre>
             {% endif %}
+        </div>
+    </div>
+    <div class="columns is-centered">
+        <div class="column is-4">
+            <h1 class="title">Предыдущие файлы</h1>
+            <table class="table is-striped">
+                {% for audio in audios %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'audio' audio.slug %}">{{ audio.audio.name }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
     </div>
 </section>
