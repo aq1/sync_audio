@@ -10,7 +10,7 @@ def audio(request, audio_slug):
     if not _audio:
         return redirect(reverse('index'))
 
-    audios = Audio.objects.all()
+    audios = Audio.objects.exclude(id=_audio.id)
     return render(request, 'main/audio.html', {'audio': _audio, 'audios': audios})
 
 
