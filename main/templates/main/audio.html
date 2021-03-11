@@ -30,6 +30,20 @@
                        oninput="volume(this.value)">
             </div>
         </div>
+        <div class="columns is-centered">
+            <div class="column is-4">
+                <h1 class="title">Предыдущие файлы</h1>
+                <table class="table is-striped">
+                    {% for audio in audios %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'audio' audio.slug %}">{{ audio.audio.name }}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
     </div>
 </section>
 
