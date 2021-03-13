@@ -37,7 +37,7 @@
                     {% for audio in audios %}
                         <tr>
                             <td>
-                                <a href="{% url 'audio' audio.slug %}">{{ audio.audio.name }}</a>
+                                <a href="{% url 'audio' audio.id audio.slug %}">{{ audio.audio.name }}</a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -53,7 +53,8 @@
     var seek;
     window.onload = function () {
         if (window["WebSocket"]) {
-            conn = new WebSocket("ws://" + document.location.host + "/ws");
+            const audioId = location.pathname.replace('/', '').split('-')[0];
+            conn = new WebSocket(`ws://${location.host}/ws/${audioId}/`);
             conn.onmessage = function (evt) {
                 let data = JSON.parse(evt.data)
                 if (data.clientId === _id) {

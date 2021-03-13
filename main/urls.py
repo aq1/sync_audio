@@ -5,5 +5,5 @@ from .views import *
 urlpatterns = [
     path('', index, name='index'),
     path('upload', upload, name='upload'),
-    path('<str:audio_slug>', audio, name='audio'),
+    path('<int:audio_id>-<str:audio_slug>', audio, name='audio'),
 ]

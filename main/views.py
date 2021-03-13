@@ -1,12 +1,12 @@
 from django import forms
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from .models import Audio
 
 
-def audio(request, audio_slug):
-    _audio = Audio.objects.filter(slug=audio_slug).first()
+def audio(request, audio_id, audio_slug):
+    _audio = Audio.objects.filter(id=audio_id).first()
     if not _audio:
         return redirect(reverse('index'))
 
@@ -31,7 +31,13 @@ def upload(request):
     form = AudioForm(request.POST, request.FILES)
     if form.is_valid():
         _audio = form.save()
-        return redirect(reverse('audio', kwargs={'audio_slug': _audio.slug}))
+        return redirect(reverse(
+            'audio',
+            kwargs={
+                'audio_slug': _audio.slug,
+                'audio_id': _audio.id,
+            },
+        ))
 
     return render(
         request,

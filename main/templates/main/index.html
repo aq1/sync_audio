@@ -34,7 +34,7 @@
                 {% for audio in audios %}
                     <tr>
                         <td>
-                            <a href="{% url 'audio' audio.slug %}">{{ audio.audio.name }}</a>
+                            <a href="{% url 'audio' audio.id audio.slug %}">{{ audio.audio.name }}</a>
                         </td>
                     </tr>
                 {% endfor %}
