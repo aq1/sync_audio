@@ -1,0 +1,25 @@
+name: CI
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        script: |
+            mkdir -p /apps/sync_audio/
+            cd /apps/sync_audio/
+            git pull
+            source /apps/sync_audio/.venv/bin/activate
+            pip install -r requirements.txt
+            cp /apps/sync_audio/settings/sync_audio.service /etc/systemd/system/
+            systemctl daemon-reload
+            systemctl restart sync_audio
