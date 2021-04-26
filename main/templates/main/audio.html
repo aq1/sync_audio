@@ -24,8 +24,8 @@
                 <button class="button is-info is-light" onclick="speed(0.1)">+ Speed</button>
                 <button class="button is-primary is-light" onclick="play()" id="play">Play</button>
                 <button class="button is-primary is-hidden" onclick="play()" id="pause">Pause</button>
-                <button class="button is-warning is-light" onclick="skip(-10)">-10s</button>
-                <button class="button is-warning is-light" onclick="skip(10)">+10s</button>
+                <button class="button is-warning is-light" onclick="skip(-1)"><<</button>
+                <button class="button is-warning is-light" onclick="skip(1)">>></button>
                 <input id="volume" style="padding: 10px 0" step="0.001" min="0" max="1" value="0.5" type="range"
                        oninput="volume(this.value)">
             </div>
@@ -100,7 +100,8 @@
     };
 
     let skip = (value) => {
-        wavesurfer.skip(value);
+        const step = (wavesurfer.getDuration() / 10);
+        wavesurfer.skip(step * Math.sign(value));
         sendMessage();
     };
 
@@ -138,14 +139,14 @@
 
     document.getElementById('waveform').onclick = () => sendMessage();
 
-    window.onkeyup = (event) => {
+    window.onkeydown = (event) => {
         event.preventDefault();
         switch (event.key) {
             case 'ArrowLeft':
-                skip(-5);
+                skip(-1);
                 break;
             case 'ArrowRight':
-                skip(5);
+                skip(1);
                 break;
             case 'ArrowUp':
                 addVolume(0.1);
