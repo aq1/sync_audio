@@ -140,23 +140,17 @@
     document.getElementById('waveform').onclick = () => sendMessage();
 
     window.onkeydown = (event) => {
-        event.preventDefault();
-        switch (event.key) {
-            case 'ArrowLeft':
-                skip(-1);
-                break;
-            case 'ArrowRight':
-                skip(1);
-                break;
-            case 'ArrowUp':
-                addVolume(0.1);
-                break;
-            case 'ArrowDown':
-                addVolume(-0.1);
-                break;
-            case ' ':
-                play();
-                break;
+        const action = {
+            'ArrowLeft': () => {skip(-1)},
+            'ArrowRight': () => {skip(1)},
+            'ArrowUp': () => {addVolume(0.1)},
+            'ArrowDown': () => {addVolume(-0.1)},
+            ' ': () => {play()},
+        }[event.key];
+
+        if (action) {
+            action();
+            e.preventDefault();
         }
     };
 </script>
