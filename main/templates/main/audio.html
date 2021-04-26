@@ -52,7 +52,7 @@
     const _id = Math.round(Math.random() * 100000);
     var seek;
     window.onload = function () {
-        if (window["WebSocket"]) {
+        if (window['WebSocket']) {
             const audioId = location.pathname.replace('/', '').split('-')[0];
             conn = new WebSocket(`ws://${location.host}/ws/${audioId}/`);
             conn.onmessage = function (evt) {
@@ -118,6 +118,13 @@
         wavesurfer.setVolume(value);
     };
 
+    const volumeInput = document.getElementById('volume');
+    let addVolume = (value) => {
+        value = Math.min(1, Math.max(0, wavesurfer.getVolume() + value));
+        wavesurfer.setVolume(value);
+        volumeInput.value = value;
+    }
+
     let sendMessage = function () {
         setTimeout(() => {
             conn.send(JSON.stringify({
@@ -130,6 +137,27 @@
     };
 
     document.getElementById('waveform').onclick = () => sendMessage();
+
+    window.onkeyup = (event) => {
+        event.preventDefault();
+        switch (event.key) {
+            case 'ArrowLeft':
+                skip(-5);
+                break;
+            case 'ArrowRight':
+                skip(5);
+                break;
+            case 'ArrowUp':
+                addVolume(0.1);
+                break;
+            case 'ArrowDown':
+                addVolume(-0.1);
+                break;
+            case ' ':
+                play();
+                break;
+        }
+    };
 </script>
 </body>
 
