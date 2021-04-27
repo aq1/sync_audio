@@ -31,7 +31,8 @@ class Audio(models.Model):
             with tempfile.NamedTemporaryFile() as fp:
                 fp.write(_audio.read())
                 fp.seek(0)
-                os.system(f'ffmpeg -i "{fp.name}" "{new_path}"')
+                if os.system(f'ffmpeg -i "{fp.name}" "{new_path}"'):
+                    return
                 self.audio.name = name
                 self.audio.file = InMemoryUploadedFile(
                     file=open(new_path, 'rb'),
