@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'main/base.html' %}
 
-<head>
-    <title>Sync Audio</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="UTF8">
-    <script src="https://unpkg.com/wavesurfer.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-</head>
-
-<body>
+{% block body %}
 <section class="section">
     <div class="container">
         <div class="columns is-centered">
@@ -19,9 +10,9 @@
         </div>
         <div class="columns is-centered">
             <div class="column is-6" style="text-align: center">
-                <button class="button is-info is-light" onclick="speed(-0.1)">- Speed</button>
-                <button class="button is-info is-light" onclick="setSpeed(1)">Speed 100%</button>
-                <button class="button is-info is-light" onclick="speed(0.1)">+ Speed</button>
+                <button class="button is-info is-light" onclick="changeSpeed(-0.1)">- Speed</button>
+                <button class="button is-info is-light" onclick="setSpeed(1)">Speed: <span id="speed">1</span></button>
+                <button class="button is-info is-light" onclick="changeSpeed(0.1)">+ Speed</button>
                 <button class="button is-primary is-light" onclick="play()" id="play">Play</button>
                 <button class="button is-primary is-hidden" onclick="play()" id="pause">Pause</button>
                 <button class="button is-warning is-light" onclick="skip(-1)"><<</button>
@@ -105,13 +96,18 @@
         sendMessage();
     };
 
-    let speed = (value) => {
-        wavesurfer.setPlaybackRate(wavesurfer.getPlaybackRate() + value);
-        sendMessage();
+    let changeSpeed = (value) => {
+        value = wavesurfer.getPlaybackRate() + value;
+        if (value < 0.5 || value > 1.5) {
+            return;
+        }
+        setSpeed(value);
     };
 
     let setSpeed = (value) => {
+        value = Number(value.toFixed(1));
         wavesurfer.setPlaybackRate(value);
+        document.getElementById('speed').innerText = `${value}`;
         sendMessage();
     };
 
@@ -154,6 +150,4 @@
         }
     };
 </script>
-</body>
-
-</html>
+{% endblock %}

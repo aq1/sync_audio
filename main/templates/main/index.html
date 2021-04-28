@@ -1,47 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'main/base.html' %}
 
-<head>
-    <title>Sync Audio</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="UTF8">
-    <script src="https://unpkg.com/wavesurfer.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-</head>
-
-<body>
-<section class="section">
-    <div class="columns is-centered">
-        <div class="column is-4">
-            <h1 class="title">Загрузите аудио</h1>
-            <form action="{% url 'upload' %}" method="post" id="form" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input type="file" name="audio" onchange="this.form.submit()">
-            </form>
+{% block body %}
+    <section class="section">
+        <div class="columns is-centered">
+            <div class="column is-4">
+                <div class="card" id="dropFile">
+                    <div class="card-content">
+                        <div class="content">
+                            <h3>Выберите аудио</h3>
+                            <form action="{% url 'upload' %}" method="post" id="form" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input id="file" type="file" name="audio" onchange="this.form.submit()">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="columns is-centered">
-        <div class="column">
-            {% if errors %}
-                <pre>{{ errors }}</pre>
-            {% endif %}
+        <div class="columns is-centered">
+            <div class="column">
+                {% if errors %}
+                    <pre>{{ errors }}</pre>
+                {% endif %}
+            </div>
         </div>
-    </div>
-    <div class="columns is-centered">
-        <div class="column is-4">
-            <h1 class="title">Другие файлы</h1>
-            <table class="table is-striped">
-                {% for audio in audios %}
-                    <tr>
-                        <td>
-                            <a href="{% url 'audio' audio.id audio.slug %}">{{ audio.audio.name }}</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
+        <div class="columns is-centered">
+            <div class="column is-4">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="content">
+                            <h3>Другие файлы</h3>
+                            <table class="table is-striped">
+                                {% for audio in audios %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'audio' audio.id audio.slug %}">{{ audio.audio.name }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</section>
-</body>
-
-</html>
+    </section>
+{% endblock %}
