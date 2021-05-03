@@ -8,7 +8,10 @@
                 <div id="waveform"></div>
             </div>
         </div>
-        <div class="columns is-centered">
+        <div class="columns is-centered" id="loading">
+            <h1 class="title">Загружается...</h1>
+        </div>
+        <div class="columns is-centered is-hidden" id="controls">
             <div class="column is-6" style="text-align: center">
                 <button class="button is-info is-light" onclick="changeSpeed(-0.1)">- Speed</button>
                 <button class="button is-info is-light" onclick="setSpeed(1)">Speed: <span id="speed">1</span></button>
@@ -81,6 +84,8 @@
     wavesurfer.load("{{ audio.audio.url }}");
     wavesurfer.on('ready', () => {
         wavesurfer.setVolume(parseFloat(document.getElementById('volume').value));
+        document.getElementById('controls').classList.toggle('is-hidden');
+        document.getElementById('loading').classList.toggle('is-hidden');
     })
 
     let play = () => {
