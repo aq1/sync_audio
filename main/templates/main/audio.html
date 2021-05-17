@@ -153,6 +153,11 @@
             action();
             event.preventDefault();
         }
+
+        const buttons = document.getElementsByTagName('button');
+        for (let button of buttons) {
+            button.blur();
+        }
     };
 </script>
 {% endblock %}
