@@ -10,12 +10,18 @@ def audio(request, audio_id, audio_slug):
     if not _audio:
         return redirect(reverse('index'))
 
-    audios = Audio.objects.exclude(id=_audio.id)
+    audios = Audio.objects.exclude(
+        id=_audio.id,
+    ).order_by(
+        '-pk',
+    )
     return render(request, 'main/audio.html', {'audio': _audio, 'audios': audios})
 
 
 def index(request):
-    audios = Audio.objects.all()
+    audios = Audio.objects.all().order_by(
+        '-pk',
+    )
     return render(request, 'main/index.html', {'audios': audios})
 
 
