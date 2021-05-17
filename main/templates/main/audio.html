@@ -149,7 +149,7 @@
             ' ': () => {play()},
         }[event.key];
 
-        if (action) {
+        if (action && !event.metaKey) {
             action();
             event.preventDefault();
         }
