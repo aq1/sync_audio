@@ -1,0 +1,14 @@
+<div class="columns is-centered">
+    <div class="column is-4">
+        <h1 class="title">Другие файлы</h1>
+        <table class="table is-striped">
+            {% for audio in audios %}
+                <tr>
+                    <td>
+                        <a href="{% url 'audio' audio.id audio.slug %}">{{ audio.filename }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>

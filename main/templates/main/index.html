@@ -24,25 +24,6 @@
                 {% endif %}
             </div>
         </div>
-        <div class="columns is-centered">
-            <div class="column is-4">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="content">
-                            <h3>Другие файлы</h3>
-                            <table class="table is-striped">
-                                {% for audio in audios %}
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'audio' audio.id audio.slug %}">{{ audio.audio.name }}</a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% include 'main/audio_list_block.html' with audios=audios %}
     </section>
 {% endblock %}

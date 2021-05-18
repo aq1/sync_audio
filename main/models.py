@@ -23,6 +23,12 @@ class Audio(models.Model):
     def __str__(self):
         return self.slug
 
+    def filename(self):
+        try:
+            return os.path.splitext(os.path.basename(self.audio.name))[0]
+        except (IndexError, TypeError, ValueError, AttributeError):
+            return self.audio.name
+
     def _convert_audio(self):
         _audio = self.audio.file
         name = os.path.splitext(_audio.name)[0] + '.mp3'
@@ -43,4 +49,3 @@ class Audio(models.Model):
                     charset=_audio.charset,
                     content_type_extra=_audio.content_type_extra,
                 )
-                print()
