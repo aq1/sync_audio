@@ -1,152 +1,176 @@
 {% extends 'main/base.html' %}
 
+{% block head %}
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+{% endblock %}
+
 {% block body %}
-<section class="section">
-    <div class="container">
-        <div class="columns is-centered">
-            <div class="column">
-                <div id="waveform"></div>
+    <section class="section">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column">
+                    <div id="waveform" style="height: 100%"></div>
+                </div>
             </div>
-        </div>
-        <div class="columns is-centered" id="loading">
-            <h1 class="title">Загружается...</h1>
-        </div>
-        <div class="columns is-centered is-hidden" id="controls">
-            <div class="column is-6" style="text-align: center">
-                <button class="button is-info is-light" onclick="changeSpeed(-0.1)">- Speed</button>
-                <button class="button is-info is-light" onclick="setSpeed(1)">Speed: <span id="speed">1</span></button>
-                <button class="button is-info is-light" onclick="changeSpeed(0.1)">+ Speed</button>
-                <button class="button is-primary is-light" onclick="play()" id="play">Play</button>
-                <button class="button is-primary is-hidden" onclick="play()" id="pause">Pause</button>
-                <button class="button is-warning is-light" onclick="skip(-1)"><<</button>
-                <button class="button is-warning is-light" onclick="skip(1)">>></button>
-                <input id="volume" style="padding: 10px 0" step="0.001" min="0" max="1" value="0.5" type="range"
-                       oninput="volume(this.value)">
+            <div class="columns is-centered" id="loading">
+                <h1 class="title">Загружается...</h1>
             </div>
+            <div class="columns is-centered is-hidden" id="controls">
+                <div class="column is-6" style="text-align: center">
+                    <button class="button is-info is-light" onclick="changeSpeed(-0.1)">- Speed</button>
+                    <button class="button is-info is-light" onclick="setSpeed(1)">Speed: <span id="speed">1</span>
+                    </button>
+                    <button class="button is-info is-light" onclick="changeSpeed(0.1)">+ Speed</button>
+                    <button class="button is-primary is-light" onclick="play()" id="play">Play</button>
+                    <button class="button is-primary is-hidden" onclick="play()" id="pause">Pause</button>
+                    <button class="button is-warning is-light" onclick="skip(-1)"><<</button>
+                    <button class="button is-warning is-light" onclick="skip(1)">>></button>
+                    <input id="volume" style="padding: 10px 0" step="0.001" min="0" max="1" value="0.5" type="range"
+                           oninput="volume(this.value)">
+                </div>
+            </div>
+
+            {% include 'main/audio_list_block.html' with audios=audios %}
+
         </div>
+    </section>
 
-        {% include 'main/audio_list_block.html' with audios=audios %}
+    <script>
+        var conn;
+        const _id = Math.round(Math.random() * 100000);
+        var seek;
+        window.onload = function () {
+            if (window['WebSocket']) {
+                const audioId = location.pathname.replace('/', '').split('-')[0];
+                conn = new WebSocket(`ws://${location.host}/ws/${audioId}/`);
+                conn.onmessage = function (evt) {
+                    let data = JSON.parse(evt.data)
+                    if (data.clientId === _id) {
+                        return;
+                    }
+                    wavesurfer.seekTo(data.position);
+                    wavesurfer.setPlaybackRate(data.speed);
+                    if (data.isPlaying) {
+                        wavesurfer.play();
+                    } else {
+                        wavesurfer.pause();
+                    }
+                };
+            }
+        };
 
-    </div>
-</section>
+        let wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            normalize: true,
+            waveColor: '#d1d6da',
+            progressColor: '#3dbeb3',
+            barWidth: 2,
+            barRadius: 3,
+            barMinHeight: 2,
+            cursorWidth: 0,
+            partialRender: true,
+            responsive: true,
+            plugins: [],
+        });
+        wavesurfer.load("{{ audio.audio.url }}");
+        wavesurfer.on('ready', () => {
+            wavesurfer.setVolume(parseFloat(document.getElementById('volume').value));
+            document.getElementById('controls').classList.toggle('is-hidden');
+            document.getElementById('loading').classList.toggle('is-hidden');
+        })
 
-<script>
-    var conn;
-    const _id = Math.round(Math.random() * 100000);
-    var seek;
-    window.onload = function () {
-        if (window['WebSocket']) {
-            const audioId = location.pathname.replace('/', '').split('-')[0];
-            conn = new WebSocket(`ws://${location.host}/ws/${audioId}/`);
-            conn.onmessage = function (evt) {
-                let data = JSON.parse(evt.data)
-                if (data.clientId === _id) {
-                    return;
-                }
-                wavesurfer.seekTo(data.position);
-                wavesurfer.setPlaybackRate(data.speed);
-                if (data.isPlaying) {
-                    document.getElementById('play').classList.add('is-hidden');
-                    document.getElementById('pause').classList.remove('is-hidden');
-                    wavesurfer.play();
-                } else {
-                    document.getElementById('play').classList.remove('is-hidden');
-                    document.getElementById('pause').classList.add('is-hidden');
-                    wavesurfer.pause();
-                }
-            };
-        }
-    };
+        let play = () => {
+            wavesurfer.playPause();
+            sendMessage();
+        };
 
-    let wavesurfer = WaveSurfer.create({
-        container: '#waveform',
-        normalize: true,
-        waveColor: '#d1d6da',
-        progressColor: '#3dbeb3',
-        barWidth: 2,
-        barRadius: 3,
-        barMinHeight: 2,
-        cursorWidth: 0,
-        partialRender: true,
-        responsive: true,
-    });
-    wavesurfer.load("{{ audio.audio.url }}");
-    wavesurfer.on('ready', () => {
-        wavesurfer.setVolume(parseFloat(document.getElementById('volume').value));
-        document.getElementById('controls').classList.toggle('is-hidden');
-        document.getElementById('loading').classList.toggle('is-hidden');
-    })
+        let skip = (value) => {
+            const step = (wavesurfer.getDuration() / 10);
+            wavesurfer.skip(step * Math.sign(value));
+            sendMessage();
+        };
 
-    let play = () => {
-        wavesurfer.playPause();
-        document.getElementById('play').classList.toggle('is-hidden');
-        document.getElementById('pause').classList.toggle('is-hidden');
-        sendMessage();
-    };
+        let changeSpeed = (value) => {
+            value = wavesurfer.getPlaybackRate() + value;
+            if (value < 0.5 || value > 1.5) {
+                return;
+            }
+            setSpeed(value);
+        };
 
-    let skip = (value) => {
-        const step = (wavesurfer.getDuration() / 10);
-        wavesurfer.skip(step * Math.sign(value));
-        sendMessage();
-    };
+        let setSpeed = (value) => {
+            value = Number(value.toFixed(1));
+            wavesurfer.setPlaybackRate(value);
+            document.getElementById('speed').innerText = `${value}`;
+            sendMessage();
+        };
 
-    let changeSpeed = (value) => {
-        value = wavesurfer.getPlaybackRate() + value;
-        if (value < 0.5 || value > 1.5) {
-            return;
-        }
-        setSpeed(value);
-    };
+        let volume = (value) => {
+            wavesurfer.setVolume(value);
+        };
 
-    let setSpeed = (value) => {
-        value = Number(value.toFixed(1));
-        wavesurfer.setPlaybackRate(value);
-        document.getElementById('speed').innerText = `${value}`;
-        sendMessage();
-    };
-
-    let volume = (value) => {
-        wavesurfer.setVolume(value);
-    };
-
-    const volumeInput = document.getElementById('volume');
-    let addVolume = (value) => {
-        value = Math.min(1, Math.max(0, wavesurfer.getVolume() + value));
-        wavesurfer.setVolume(value);
-        volumeInput.value = value;
-    }
-
-    let sendMessage = function () {
-        setTimeout(() => {
-            conn.send(JSON.stringify({
-                'clientId': _id,
-                'isPlaying': wavesurfer.isPlaying(),
-                'position': wavesurfer.getCurrentTime() / wavesurfer.getDuration(),
-                'speed': wavesurfer.getPlaybackRate(),
-            }));
-        }, 100);
-    };
-
-    document.getElementById('waveform').onclick = () => sendMessage();
-
-    window.onkeydown = (event) => {
-        const action = {
-            'ArrowLeft': () => {skip(-1)},
-            'ArrowRight': () => {skip(1)},
-            'ArrowUp': () => {addVolume(0.1)},
-            'ArrowDown': () => {addVolume(-0.1)},
-            ' ': () => {play()},
-        }[event.key];
-
-        if (action && !event.metaKey) {
-            action();
-            event.preventDefault();
+        const volumeInput = document.getElementById('volume');
+        let addVolume = (value) => {
+            value = Math.min(1, Math.max(0, wavesurfer.getVolume() + value));
+            wavesurfer.setVolume(value);
+            volumeInput.value = value;
         }
 
-        const buttons = document.getElementsByTagName('button');
-        for (let button of buttons) {
-            button.blur();
-        }
-    };
-</script>
+        const sendMessage = function () {
+            setTimeout(() => {
+                conn.send(JSON.stringify({
+                    'clientId': _id,
+                    'isPlaying': wavesurfer.isPlaying(),
+                    'position': wavesurfer.getCurrentTime() / wavesurfer.getDuration(),
+                    'speed': wavesurfer.getPlaybackRate(),
+                }));
+            }, 100);
+        };
+
+        document.getElementById('waveform').onclick = () => sendMessage();
+
+        window.onkeydown = (event) => {
+            const action = {
+                'ArrowLeft': () => {
+                    skip(-1)
+                },
+                'ArrowRight': () => {
+                    skip(1)
+                },
+                'ArrowUp': () => {
+                    addVolume(0.1)
+                },
+                'ArrowDown': () => {
+                    addVolume(-0.1)
+                },
+                ' ': () => {
+                    play()
+                },
+            }[event.key];
+
+            if (action && !event.metaKey) {
+                action();
+                event.preventDefault();
+            }
+
+            const buttons = document.getElementsByTagName('button');
+            for (let button of buttons) {
+                button.blur();
+            }
+        };
+
+        wavesurfer.on('play', () => {
+            document.getElementById('pause').classList.remove('is-hidden');
+            document.getElementById('play').classList.add('is-hidden');
+        });
+
+        wavesurfer.on('pause', () => {
+            document.getElementById('play').classList.remove('is-hidden');
+            document.getElementById('pause').classList.add('is-hidden');
+        });
+
+        wavesurfer.on('interaction', (event) => {
+            console.log(event);
+        });
+    </script>
 {% endblock %}
