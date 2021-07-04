@@ -1,4 +1,8 @@
 from pathlib import Path
+import environ
+
+env = environ.Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -7,12 +11,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'gxtx)_q$wt#e=ycf-&uw!q9!zjnqe_rqb#lvgv6--vb&^l_u^7'
+SECRET_KEY = env('SECRET_KEY', default='gxtx)_q$wt#e=ycf-&uw!q9!zjnqe_rqb#lvgv6--vb&^l_u^7')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 # Application definition
 
@@ -37,8 +43,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-import os
-redis_host = os.environ.get('REDIS_HOST', 'localhost')
+redis_host = env('REDIS_HOST', default='localhost')
 
 # Channel layer definitions
 # http://channels.readthedocs.io/en/latest/topics/channel_layers.html
@@ -76,10 +81,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db(default='sqlite://db.sqlite3')
 }
 
 # Password validation
@@ -105,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

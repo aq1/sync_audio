@@ -20,7 +20,7 @@ jobs:
             git pull
             source /apps/sync_audio/.venv/bin/activate
             pip install -r requirements.txt
-            cp /apps/sync_audio/project/settings/sync_audio.service /etc/systemd/system/
+            cp /apps/sync_audio/config/sync_audio_django.service /etc/systemd/system/
             python manage.py migrate
             systemctl daemon-reload
-            systemctl restart sync_audio
+            systemctl restart sync_audio_django
