@@ -21,8 +21,8 @@ jobs:
             source /apps/sync_audio/.venv/bin/activate
             pip install -r requirements.txt
             cp /apps/sync_audio/config/sync_audio_daphne.conf /etc/systemd/system/
-            cp /apps/sync_audio/config/sync_audio_gunicorn.conf /etc/systemd/system/
-            cp /apps/sync_audio/config/sync_audio_nginx.conf /etc/nginx/nginx.conf
+            cp /apps/sync_audio/config/sync_audio_gunicorn.service /etc/systemd/system/
+            cp /apps/sync_audio/config/sync_audio_nginx.service /etc/nginx/nginx.conf
             python manage.py migrate
             systemctl daemon-reload
             systemctl restart sync_audio_gunicorn
