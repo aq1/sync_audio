@@ -8,7 +8,7 @@ User=root
 Group=root
 WorkingDirectory=/apps/sync_audio/
 Environment="DJANGO_SETTINGS_MODULE=project.settings.base"
-ExecStart=/apps/sync_audio/.venv/bin/gunicorn {{ project_name}}.wsgi --bind 0.0.0.0:8000 --log-level error --log-file=- --workers 5 --preload
+ExecStart=/apps/sync_audio/.venv/bin/gunicorn project.wsgi --bind 127.0.0.1:8000 --log-level error --log-file=- --workers 5 --preload
 
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
