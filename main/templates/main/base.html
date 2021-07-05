@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 
+{% load static %}
+
 <head>
     <title>Listen Together</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF8">
+
+    <meta property="og:title" content="Listen Together">
+    <meta property="og:description" content="Synchronously listen uploaded audio with friends">
+    <meta property="og:image" content="{% static 'main/thumb.jpg' %}">
+    <meta property="og:url" content="{% url 'index' %}">
+
+    <link rel="shortcut icon" href="{% static 'main/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'main/favicon.ico' %}" type="image/x-icon">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     {% block head %}
     {% endblock %}
