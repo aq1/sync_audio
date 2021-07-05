@@ -36,9 +36,8 @@
     </section>
 
     <script>
-        var conn;
+        let conn;
         const _id = Math.round(Math.random() * 100000);
-        var seek;
         window.onload = function () {
             if (window['WebSocket']) {
                 const audioId = location.pathname.replace('/', '').split('-')[0];
