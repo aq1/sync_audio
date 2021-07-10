@@ -79,7 +79,7 @@
         window.onload = function () {
             if (window['WebSocket']) {
                 const audioId = location.pathname.replace('/', '').split('-')[0];
-                conn = new WebSocket(`ws://${location.host}/ws/${audioId}/`);
+                conn = new WebSocket(`wss://${location.host}/ws/${audioId}/`);
                 conn.onmessage = function (evt) {
                     let data = JSON.parse(evt.data)
                     if (data.clientId === _id) {
