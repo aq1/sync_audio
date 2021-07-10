@@ -16,36 +16,16 @@
     <link rel="shortcut icon" href="{% static 'audios/favicon.ico' %}" type="image/x-icon">
     <link rel="icon" href="{% static 'audios/favicon.ico' %}" type="image/x-icon">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" media="print"
-          onload="bulmaLoaded(this)">
-    <script src="https://kit.fontawesome.com/f91a654b46.js" crossorigin="anonymous" async></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <script src="https://kit.fontawesome.com/f91a654b46.js" crossorigin="anonymous"></script>
     {% block head %}
     {% endblock %}
 </head>
 
-<script>
-    let bulmaLoaded = (css) => {
-        css.media = 'all';
-        document.querySelector('div.loaded').style.display = 'block';
-        document.querySelector('div.loading').style.display = 'none';
-    }
-</script>
-
-<style>
-    div.loaded {
-        display: none;
-    }
-</style>
-
 <body>
-<div class="loading">
-    <h1>Loading...</h1>
-</div>
-<div class="loaded">
-    {% include 'audios/parts/navbar.html' %}
-    {% block body %}
-    {% endblock %}
-</div>
+{% include 'audios/parts/navbar.html' %}
+{% block body %}
+{% endblock %}
 </body>
 
 </html>
