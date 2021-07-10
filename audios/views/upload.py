@@ -6,6 +6,7 @@ from django.views.decorators.http import require_http_methods
 
 from .utils import get_sorted_user_directories
 from ..models import Audio
+from ..models import Directory
 
 
 class AudioForm(forms.ModelForm):
@@ -33,6 +34,8 @@ def upload(request):
 @require_http_methods(['POST'])
 def upload_submit(request):
     form = AudioForm(request.POST, request.FILES)
+    form.fields['directory'].queryset = Directory.objects.filter(user=request.user)
+
     if form.is_valid():
         form.instance.user = request.user
         _audio = form.save()
