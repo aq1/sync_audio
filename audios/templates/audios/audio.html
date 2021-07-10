@@ -13,24 +13,62 @@
                 </div>
             </div>
             <div class="columns is-centered" id="loading">
-                <h1 class="title">Загружается...</h1>
-            </div>
-            <div class="columns is-centered is-hidden" id="controls">
-                <div class="column is-6" style="text-align: center">
-                    <button class="button is-info is-light" onclick="changeSpeed(-0.1)">- Speed</button>
-                    <button class="button is-info is-light" onclick="setSpeed(1)">Speed: <span id="speed">1</span>
-                    </button>
-                    <button class="button is-info is-light" onclick="changeSpeed(0.1)">+ Speed</button>
-                    <button class="button is-primary is-light" onclick="play()" id="play">Play</button>
-                    <button class="button is-primary is-hidden" onclick="play()" id="pause">Pause</button>
-                    <button class="button is-warning is-light" onclick="skip(-1)"><<</button>
-                    <button class="button is-warning is-light" onclick="skip(1)">>></button>
-                    <input id="volume" style="padding: 10px 0" step="0.001" min="0" max="1" value="0.5" type="range"
-                           oninput="volume(this.value)">
+                <div class="column is-4">
+                    <h1 class="title has-text-centered">Loading...</h1>
                 </div>
             </div>
+            <div id="controls" class="is-hidden">
+                <div class="columns is-centered has-text-centered">
+                    <div class="column is-4">
+                        <button class="button is-danger is-large is-inverted" onclick="skip(-1)">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-undo-alt"></i>
+                            </span>
+                        </button>
+                        <button class="button is-danger is-outlined is-large" onclick="play()">
+                            <span class="icon is-small is-left">
+                                <i id="play" class="fas fa-play"></i>
+                                <i id="pause" class="is-hidden fas fa-pause"></i>
+                            </span>
+                        </button>
+                        <button class="button is-danger is-large is-inverted" onclick="skip(1)">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-redo-alt"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="columns is-centered">
+                    <div class="column is-4" style="text-align: center">
+                        <button class="button is-primary is-large is-inverted" onclick="changeSpeed(-0.1)">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-minus"></i>
+                            </span>
+                        </button>
+                        <button class="button is-primary is-outlined is-large" onclick="setSpeed(1)">
+                            <span class="icon is-small is-left">
+                                <span id="speed">1</span>
+                                <i class="fas fa-tachometer-alt"></i>
+                            </span>
+                        </button>
+                        <button class="button is-primary is-large is-inverted" onclick="changeSpeed(0.1)">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="columns is-centered">
+                    <div class="column is-4" style="text-align: center">
+                        <input id="volume" style="padding: 10px 0; width: 180px" step="0.001" min="0"
+                               max="1" value="0.5" type="range"
+                               oninput="volume(this.value)">
 
-            {% include 'audios/audio_list_block.html' with audios=audios %}
+                    </div>
+                </div>
+            </div>
+            <hr>
+            {% include 'audios/parts/audio_list_block.html' with audios=audios %}
 
         </div>
     </section>
@@ -41,7 +79,7 @@
         window.onload = function () {
             if (window['WebSocket']) {
                 const audioId = location.pathname.replace('/', '').split('-')[0];
-                conn = new WebSocket(`wss://${location.host}/ws/${audioId}/`);
+                conn = new WebSocket(`ws://${location.host}/ws/${audioId}/`);
                 conn.onmessage = function (evt) {
                     let data = JSON.parse(evt.data)
                     if (data.clientId === _id) {
@@ -62,7 +100,7 @@
             container: '#waveform',
             normalize: true,
             waveColor: '#d1d6da',
-            progressColor: '#3dbeb3',
+            progressColor: '#00d1b2',
             barWidth: 2,
             barRadius: 3,
             barMinHeight: 2,
@@ -128,6 +166,15 @@
 
         document.getElementById('waveform').onclick = () => sendMessage();
 
+        let blurButtons = () => {
+            const buttons = document.getElementsByTagName('button');
+            for (let button of buttons) {
+                button.blur();
+            }
+        };
+
+        window.onmouseup = blurButtons;
+
         window.onkeydown = (event) => {
             const action = {
                 'ArrowLeft': () => {
@@ -150,12 +197,10 @@
             if (action && !event.metaKey) {
                 action();
                 event.preventDefault();
+                event.stopPropagation();
             }
 
-            const buttons = document.getElementsByTagName('button');
-            for (let button of buttons) {
-                button.blur();
-            }
+            blurButtons();
         };
 
         wavesurfer.on('play', () => {
@@ -166,10 +211,6 @@
         wavesurfer.on('pause', () => {
             document.getElementById('play').classList.remove('is-hidden');
             document.getElementById('pause').classList.add('is-hidden');
-        });
-
-        wavesurfer.on('interaction', (event) => {
-            console.log(event);
         });
     </script>
 {% endblock %}

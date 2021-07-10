@@ -22,12 +22,21 @@ class Audio(models.Model):
     audio = models.FileField(
         upload_to='audio',
     )
-    slug = models.SlugField(
+
+    slug = models.CharField(
+        max_length=1000,
         db_index=True,
+        blank=True,
     )
+
     name = models.CharField(
         max_length=255,
         default='',
+        blank=True,
+    )
+
+    uploaded_at = models.DateTimeField(
+        auto_now_add=True,
     )
 
     def save(self, **kwargs):

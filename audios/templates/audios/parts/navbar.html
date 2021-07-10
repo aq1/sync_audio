@@ -1,0 +1,47 @@
+{% load static %}
+
+<style>
+    nav {
+        divst-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin-bottom: 20px;
+    }
+
+    nav div {
+        float: left;
+    }
+
+    nav div a {
+        display: block;
+        color: white;
+        text-adivgn: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    nav div.right {
+        float: right;
+    }
+</style>
+
+
+<nav class="navbar is-danger">
+    {% if request.user.is_authenticated %}
+        <div class="has-text-centered"><a href="{% url 'audios:index' %}">Listen Together</a></div>
+        <div class="has-text-centered">
+            <a href="{% url 'audios:upload' %}">
+                <span class="icon is-small is-left"><i class="fas fa-plus-square"></i></span><span> Upload</span>
+            </a>
+        </div>
+        <div class="has-text-centered right">
+            <a href="{% url 'accounts:logout' %}">
+                <span class="icon is-small is-left"><i class="fas fa-sign-out-alt"></i></span><span> Logout</span>
+            </a>
+        </div>
+    {% endif %}
+</nav>

@@ -1,0 +1,72 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" async></script>
+
+<script>
+    let toggleVisibility = (a) => {
+        document.getElementById(a.dataset.target).classList.toggle('invisible');
+    }
+
+    let filterList = (value) => {
+        const items = document.querySelectorAll('*[data-searchable]');
+        const pattern = new RegExp(value, 'i');
+        const instance = new Mark('aside');
+
+        items.forEach((item) => {
+            if (item.classList.contains('invisible')) {
+                return;
+            }
+
+            if (pattern.test(item.text)) {
+                item.classList.remove('hidden-by-search');
+            } else {
+                item.classList.add('hidden-by-search');
+            }
+        });
+        instance.unmark();
+        instance.mark(value, {className: 'has-background-info-dark has-text-white'});
+    }
+</script>
+
+<style>
+    ul.menu-list .hidden-by-search,
+    ul.menu-list .invisible {
+        display: none;
+    }
+</style>
+
+<div class='columns is-centered'>
+    <div class='column is-4'>
+        <div class='field'>
+            <p class='control has-icons-left'>
+                <input class='input' placeholder='Filter by name' onkeyup='filterList(this.value)' value=''>
+                <span class='icon is-small is-left'><i class='fas fa-filter'></i></span>
+            </p>
+        </div>
+    </div>
+</div>
+<div class='columns is-centered'>
+    <div class='column is-4'>
+        <aside class='menu'>
+            {% for directory, directory_audios in audios %}
+                <ul class='menu-list'>
+                    <li>
+                        <a onclick='toggleVisibility(this)'
+                           data-target='ul-{{ forloop.counter0 }}'>
+                            <span class='icon is-small is-left'><i class='fas fa-folder'></i></span>
+                            <span>{{ directory }}</span>
+                        </a>
+                        <ul id='ul-{{ forloop.counter0 }}'>
+                            {% for audio in directory_audios %}
+                                <li>
+                                    <a data-searchable href="{% url 'audios:audio' audio.id audio.slug %}">
+                                        <span class='icon is-small is-left'><i class="far fa-file-audio"></i></span>
+                                        <span>{{ audio }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endfor %}
+        </aside>
+    </div>
+</div>

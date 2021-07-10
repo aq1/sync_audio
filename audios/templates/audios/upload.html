@@ -1,0 +1,79 @@
+{% extends 'audios/base.html' %}
+
+{% block body %}
+    <section class="section">
+        <div class="columns is-centered">
+            <div class="column is-6">
+                <form action="{% url 'audios:upload_submit' %}"
+                      method="post"
+                      id="form"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="field is-grouped">
+                        <div class="control has-icons-left is-expanded">
+                            <div class="select is-large" style="width: 100%">
+                                <select style="width: 100%" name="directory">
+                                    {% for directory in directories %}
+                                        <option value="{{ directory.id }}">{{ directory.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <span class="icon is-large is-left">
+                                <i class="fas fa-folder"></i>
+                          </span>
+                        </div>
+                        <div class="control">
+                            <button class="button is-large" type="button" onclick="goToAddDir()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="field file is-large has-name">
+                        <label class="file-label" style="width: 100%">
+                            <input class="file-input" id="audioFileInput" type="file" name="audio" accept="audio/*"
+                                   required>
+                            <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span class="file-label">
+                            Choose a file…
+                          </span>
+                        </span>
+                            <span id="fileName" class="file-name"
+                                  style="width: 100%; max-width: none">No file selected</span>
+                        </label>
+                    </div>
+                    <div class="field is-large has-name">
+                        <p class="control">
+                            <button class="button is-success">
+                                Upload
+                            </button>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                {% if errors %}
+                    <pre>{{ errors }}</pre>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    <script>
+        const goToAddDir = (e) => {
+            window.location.href = "{% url 'audios:directory' %}";
+        };
+        window.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.querySelector('#audioFileInput');
+            fileInput.onchange = () => {
+                if (fileInput.files.length > 0) {
+                    const fileName = document.querySelector('#fileName');
+                    fileName.textContent = fileInput.files[0].name;
+                }
+            }
+        })
+    </script>
+{% endblock %}

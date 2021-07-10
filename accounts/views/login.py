@@ -4,11 +4,20 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as django_login
+from django.contrib.auth import logout as django_logout
+
+
+def _get_redirect_location(request):
+    return request.GET.get(
+        'next',
+        reverse('audios:index'),
+    )
+
 
 @require_http_methods(['GET'])
 def login(request):
     if request.user.is_authenticated:
-        return redirect(reverse('audios:index'))
+        return redirect(_get_redirect_location(request))
 
     return render(request, 'accounts/login.html')
 
@@ -20,12 +29,13 @@ def login_submit(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         django_login(request, user)
-        return redirect('audios:index')
+        return redirect(_get_redirect_location(request))
 
     return render(request, 'accounts/login.html', {'error': 'Invalid password or username'})
 
 
 @login_required
-@require_http_methods(['POST'])
+@require_http_methods(['GET'])
 def logout(request):
-    pass
+    django_logout(request)
+    return redirect(_get_redirect_location(request))

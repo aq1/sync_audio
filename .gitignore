@@ -283,3 +283,5 @@ tmp_email/
 .history
 
 .idea/
+
+!audios/templates/audios/*

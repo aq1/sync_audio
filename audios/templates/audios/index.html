@@ -2,28 +2,6 @@
 
 {% block body %}
     <section class="section">
-        <div class="columns is-centered">
-            <div class="column is-4">
-                <div class="card" id="dropFile">
-                    <div class="card-content">
-                        <div class="content">
-                            <h3>Выберите аудио</h3>
-                            <form action="{% url 'audios:upload' %}" method="post" id="form" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <input id="file" type="file" name="audio" accept="audio/*" onchange="this.form.submit()">
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="columns is-centered">
-            <div class="column">
-                {% if errors %}
-                    <pre>{{ errors }}</pre>
-                {% endif %}
-            </div>
-        </div>
-        {% include 'audios/audio_list_block.html' with audios=audios %}
+        {% include 'audios/parts/audio_list_block.html' with audios=audios %}
     </section>
 {% endblock %}

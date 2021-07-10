@@ -2,6 +2,16 @@
 
 {% block body %}
     <section class="section">
+
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-4">
+                <h1 class="title">
+                    <i class="fas fa-music"></i>
+                    <span class="pl-2 pr-2">Listen Together</span>
+                    <i class="fas fa-music"></i>
+                </h1>
+            </div>
+        </div>
         <div class="columns is-centered">
             <div class="column is-4">
                 <form action="{% url 'accounts:login_submit' %}" method="post">
@@ -9,7 +19,8 @@
                     <div class="field">
                         <label class="label">Username</label>
                         <div class="control has-icons-left has-icons-right">
-                            <input class="input {% if error %}is-danger{% endif %}" name="username" type="text" autofocus required>
+                            <input class="input {% if error %}is-danger{% endif %}" name="username" type="text"
+                                   autofocus required>
                             <span class="icon is-small is-left"><i class="fas fa-user"></i></span>
                             <span class="icon is-small is-right"><i class="fas fa-exclamation-triangle"></i></span>
                         </div>
@@ -18,7 +29,8 @@
                     <div class="field">
                         <label class="label">Password</label>
                         <div class="control has-icons-left has-icons-right">
-                            <input class="input {% if error %}is-danger{% endif %}" name="password" type="password" required>
+                            <input class="input {% if error %}is-danger{% endif %}" name="password" type="password"
+                                   required>
                             <span class="icon is-small is-left"><i class="fas fa-unlock"></i></span>
                             <span class="icon is-small is-right"><i class="fas fa-exclamation-triangle"></i></span>
                         </div>

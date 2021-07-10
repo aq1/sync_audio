@@ -1,12 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from ..models import Audio
+from .utils import get_sorted_user_audios
 
 
 @login_required
 def index(request):
-    audios = Audio.objects.all().order_by(
-        '-pk',
-    )
+    audios = get_sorted_user_audios(request.user)
     return render(request, 'audios/index.html', {'audios': audios})

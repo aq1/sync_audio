@@ -1,0 +1,37 @@
+{% extends 'audios/base.html' %}
+
+{% block body %}
+    <div class="columns is-centered">
+        <div class="column is-6">
+            <form action="{% url 'audios:directory_submit' %}"
+                  method="post"
+                  id="form"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="name" class="label">Directory Name</label>
+                    <div class="control has-icons-left">
+                        <input class="input" id="name" name="name" required>
+                        <span class="icon is-small is-left"><i class="fas fa-envelope"></i></span>
+                    </div>
+                </div>
+                <div class="field is-large has-name">
+                    <p class="control">
+                        <button class="button is-success">
+                            Add
+                        </button>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="columns is-centered">
+        <div class="column">
+            {% if errors %}
+                <pre>{{ errors }}</pre>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+    {% include 'audios/parts/audio_list_block.html' with audios=audios %}
+{% endblock %}
