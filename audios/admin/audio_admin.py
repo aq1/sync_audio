@@ -11,4 +11,4 @@ class AudioAdmin(admin.ModelAdmin):
 
     def url(self, obj: Audio):
         url = reverse('audios:audio', args=(obj.id, obj.slug))
-        return mark_safe(f'<a target="_blank" href="View {obj.name}">{url}</a>')
+        return mark_safe(f'<a target="_blank" href="{url}">View {obj.name}</a>')
