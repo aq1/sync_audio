@@ -40,7 +40,7 @@
         </div>
         <div class="has-text-centered right">
             <a href="{% url 'accounts:logout' %}">
-                <span class="icon is-small is-left"><i class="fas fa-sign-out-alt"></i></span><span> Logout</span>
+                <span class="icon is-small is-left"><i class="fas fa-sign-out-alt"></i></span><span> Logout as {{ request.user.username }}</span>
             </a>
         </div>
     {% endif %}
