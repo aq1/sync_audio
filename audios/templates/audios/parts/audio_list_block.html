@@ -59,7 +59,7 @@
                                 <li>
                                     <a data-searchable href="{% url 'audios:audio' audio.id audio.slug %}">
                                         <span class='icon is-small is-left'><i class="far fa-file-audio"></i></span>
-                                        <span>{{ audio }}</span>
+                                        <span>{{ audio.name }}</span>
                                     </a>
                                 </li>
                             {% endfor %}
