@@ -7,8 +7,8 @@ from ..models import Audio
 
 @admin.register(Audio)
 class AudioAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'url']
+    list_display = ['name', 'url']
 
     def url(self, obj: Audio):
         url = reverse('audios:audio', args=(obj.id, obj.slug))
-        return mark_safe(f'<a target="_blank" href="{url}">{url}</a>')
+        return mark_safe(f'<a target="_blank" href="View {obj.name}">{url}</a>')
