@@ -1,6 +1,7 @@
 import os
 import tempfile
 
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.text import slugify
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -8,26 +9,35 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 class Audio(models.Model):
 
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+    )
+
+    directory = models.ForeignKey(
+        'audios.Directory',
+        on_delete=models.CASCADE,
+    )
+
     audio = models.FileField(
         upload_to='audio',
     )
     slug = models.SlugField(
         db_index=True,
     )
+    name = models.CharField(
+        max_length=255,
+        default='',
+    )
 
     def save(self, **kwargs):
         self._convert_audio()
-        self.slug = slugify(' '.join(self.audio.name.split('.')[:-1]), allow_unicode=True)
+        self.name = ' '.join(self.audio.name.split('.')[:-1])
+        self.slug = slugify(self.name, allow_unicode=True)
         return super().save(**kwargs)
 
     def __str__(self):
-        return self.slug
-
-    def filename(self):
-        try:
-            return os.path.splitext(os.path.basename(self.audio.name))[0]
-        except (IndexError, TypeError, ValueError, AttributeError):
-            return self.audio.name
+        return f'Audio {self.slug}'
 
     def _convert_audio(self):
         _audio = self.audio.file

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+    <title>Listen Together</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF8">
+
+    <meta property="og:title" content="Listen Together">
+    <meta property="og:description" content="Synchronously listen uploaded audio with friends">
+    <meta property="og:image" content="https://listen-together.com{% static 'audios/thumb.jpg' %}">
+    <meta property="og:url" content="https://listen-together.com{% url 'audios:index' %}">
+
+    <link rel="shortcut icon" href="{% static 'audios/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'audios/favicon.ico' %}" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <script src="https://kit.fontawesome.com/f91a654b46.js" crossorigin="anonymous"></script>
+
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body>
+<nav class="navbar is-danger" role="navigation" aria-label="main navigation">
+
+    <div class="navbar-brand">
+        <a class="navbar-item" href="{% url 'audios:index' %}">
+            <span>Listen Together</span>
+        </a>
+    </div>
+
+</nav>
+{% block body %}
+{% endblock %}
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-{% extends 'main/base.html' %}
+{% extends 'audios/base.html' %}
 
 {% block head %}
     <script src="https://unpkg.com/wavesurfer.js"></script>
@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            {% include 'main/audio_list_block.html' with audios=audios %}
+            {% include 'audios/audio_list_block.html' with audios=audios %}
 
         </div>
     </section>
