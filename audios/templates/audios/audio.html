@@ -87,6 +87,8 @@
                     }
                     wavesurfer.seekTo(data.position);
                     wavesurfer.setPlaybackRate(data.speed);
+                    document.getElementById('speed').innerText = `${data.speed}`;
+
                     if (data.isPlaying) {
                         wavesurfer.play();
                     } else {
