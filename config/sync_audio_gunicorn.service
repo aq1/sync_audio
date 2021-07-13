@@ -7,7 +7,7 @@ PIDFile=/run/gunicorn/pid
 User=root
 Group=root
 WorkingDirectory=/apps/sync_audio/
-Environment="DJANGO_SETTINGS_MODULE=project.settings.base"
+Environment="DJANGO_SETTINGS_MODULE=project.settings.production"
 ExecStart=/apps/sync_audio/.venv/bin/gunicorn project.wsgi --bind 0.0.0.0:8000 --log-level error --error-logfile gunicorn_error.log --workers 5 --preload
 
 ExecReload=/bin/kill -s HUP $MAINPID

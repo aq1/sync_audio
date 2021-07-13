@@ -127,3 +127,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'accounts.User'
 LOGIN_URL = 'accounts:login'
 DATA_UPLOAD_MAX_MEMORY_SIZE = env.int('DATA_UPLOAD_MAX_MEMORY_SIZE', default=10000000)
+
+SENTRY_KEY = env('SENTRY_KEY', default='')
