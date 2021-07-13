@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import reverse
+from django.urls import reverse, NoReverseMatch
 from django.utils.safestring import mark_safe
 
 from ..models import Audio
@@ -26,7 +26,10 @@ class AudioAdmin(admin.ModelAdmin):
     ]
 
     def url(self, obj: Audio):
-        url = reverse('audios:audio', args=(obj.id, obj.slug))
+        try:
+            url = reverse('audios:audio', args=(obj.id, obj.slug))
+        except NoReverseMatch:
+            return 'Bad URL'
         return mark_safe(f'<a target="_blank" href="{url}">View on site</a>')
 
 
