@@ -1,15 +1,32 @@
 from django import forms
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
+
+import magic
 
 from .utils import get_sorted_user_directories
 from ..models import Audio
 from ..models import Directory
 
 
+def audio_type_validator(obj):
+    detected_type = magic.from_buffer(obj.read(5 * (1024 * 1024)), mime=True)
+    obj.seek(0)
+
+    if detected_type.split('/')[0] != 'audio':
+        raise ValidationError('Bad file type')
+
+
 class AudioForm(forms.ModelForm):
+    audio = forms.FileField(
+        validators=[
+            audio_type_validator,
+        ]
+    )
+
     class Meta:
         model = Audio
         fields = [
