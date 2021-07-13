@@ -17,7 +17,7 @@ def audio_type_validator(obj):
     obj.seek(0)
 
     if detected_type.split('/')[0] != 'audio':
-        raise ValidationError('Bad file type')
+        raise ValidationError(f'Bad mime type: {detected_type}')
 
 
 class AudioForm(forms.ModelForm):
