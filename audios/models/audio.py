@@ -53,7 +53,7 @@ class Audio(models.Model):
         _audio = self.audio.file
         name = os.path.splitext(_audio.name)[0] + settings.DEFAULT_AUDIO_FORMAT
         with tempfile.TemporaryDirectory() as temp_dir:
-            new_path = f'{temp_dir + "/" + name}'
+            new_path = os.path.join(temp_dir, name)
             with tempfile.NamedTemporaryFile() as fp:
                 fp.write(_audio.read())
                 fp.seek(0)
