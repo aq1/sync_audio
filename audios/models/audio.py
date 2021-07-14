@@ -1,6 +1,7 @@
 import os
 import tempfile
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.text import slugify
@@ -50,7 +51,7 @@ class Audio(models.Model):
 
     def _convert_audio(self):
         _audio = self.audio.file
-        name = os.path.splitext(_audio.name)[0] + '.mp3'
+        name = os.path.splitext(_audio.name)[0] + settings.DEFAULT_AUDIO_FORMAT
         with tempfile.TemporaryDirectory() as temp_dir:
             new_path = f'{temp_dir + "/" + name}'
             with tempfile.NamedTemporaryFile() as fp:

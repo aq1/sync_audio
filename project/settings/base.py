@@ -129,3 +129,5 @@ LOGIN_URL = 'accounts:login'
 DATA_UPLOAD_MAX_MEMORY_SIZE = env.int('DATA_UPLOAD_MAX_MEMORY_SIZE', default=10000000)
 
 SENTRY_KEY = env('SENTRY_KEY', default='')
+
+DEFAULT_AUDIO_FORMAT = env('DEFAULT_AUDIO_FORMAT', default='.ogg')
