@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF8">
 
-    <meta property="og:title" content="Listen Together">
+    <meta property="og:title" content="{% block meta_title %}Listen Together{% endblock %}">
     <meta property="og:description" content="Synchronously listen uploaded audio with friends">
     <meta property="og:image" content="https://listen-together.com{% static 'audios/thumb.jpg' %}">
     <meta property="og:url" content="https://listen-together.com{% url 'audios:index' %}">

@@ -3,6 +3,9 @@
 {% block title %}
     {{ block.super }} - {{ audio.name }}
 {% endblock %}
+{% block meta_title %}
+    {{ block.super }} - {{ audio.name }}
+{% endblock %}
 
 {% block head %}
     <script src="https://unpkg.com/wavesurfer.js"></script>
