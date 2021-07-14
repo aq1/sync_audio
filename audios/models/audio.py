@@ -66,6 +66,6 @@ class Audio(models.Model):
                     name=name,
                     content_type='audio/mpeg',
                     size=_audio.size,
-                    charset=_audio.charset,
+                    charset='utf8',
                     content_type_extra=_audio.content_type_extra,
                 )
