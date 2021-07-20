@@ -1,11 +1,11 @@
-import os
-import tempfile
+import io
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.text import slugify
 from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from ..utils import convert_audio
 
 
 class Audio(models.Model):
@@ -50,22 +50,14 @@ class Audio(models.Model):
         return f'Audio {self.slug}'
 
     def _convert_audio(self):
-        _audio = self.audio.file
-        name = os.path.splitext(_audio.name)[0] + settings.DEFAULT_AUDIO_FORMAT
-        with tempfile.TemporaryDirectory() as temp_dir:
-            new_path = os.path.join(temp_dir, name)
-            with tempfile.NamedTemporaryFile() as fp:
-                fp.write(_audio.read())
-                fp.seek(0)
-                if os.system(f'ffmpeg -i "{fp.name}" "{new_path}"'):
-                    return
-                self.audio.name = name
-                self.audio.file = InMemoryUploadedFile(
-                    file=open(new_path, 'rb'),
-                    field_name='audio',
-                    name=name,
-                    content_type='audio/mpeg',
-                    size=_audio.size,
-                    charset='utf8',
-                    content_type_extra=None,
-                )
+        name, audio_bytes = convert_audio(self.audio.file)
+        self.audio.name = name
+        self.audio.file = InMemoryUploadedFile(
+            file=io.BytesIO(audio_bytes),
+            field_name='audio',
+            name=name,
+            content_type=None,
+            size=len(audio_bytes),
+            charset=None,
+            content_type_extra=None,
+        )
