@@ -84,13 +84,6 @@
     </section>
 
     <script>
-
-        const isIOS = [
-            'iPhone Simulator',
-            'iPhone',
-        ].includes(navigator.platform);
-        const audioBackend = isIOS ? 'MediaElement' : 'WebAudio';
-
         let conn;
         const _id = Math.round(Math.random() * 100000);
         window.onload = function () {
@@ -117,7 +110,7 @@
 
         let wavesurfer = WaveSurfer.create({
             container: '#waveform',
-            backend: audioBackend,
+            backend: 'MediaElement',
             normalize: true,
             waveColor: '#d1d6da',
             progressColor: '#00d1b2',
@@ -125,7 +118,6 @@
             barRadius: 3,
             barMinHeight: 2,
             cursorWidth: 0,
-            partialRender: true,
             responsive: true,
             plugins: [],
         });
