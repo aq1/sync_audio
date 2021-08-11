@@ -2,6 +2,17 @@
 
 {% block body %}
     <section class="section">
+        {% if request.user.is_anonymous %}
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-4">
+                    <h1 class="title">
+                        <i class="fas fa-music"></i>
+                        <span class="pl-2 pr-2">Listen Together</span>
+                        <i class="fas fa-music"></i>
+                    </h1>
+                </div>
+            </div>
+        {% endif %}
         {% include 'audios/parts/audio_list_block.html' with audios=audios %}
     </section>
 {% endblock %}

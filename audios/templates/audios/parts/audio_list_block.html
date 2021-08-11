@@ -58,7 +58,7 @@
                         <a onclick='toggleVisibility(this)'
                            data-target='ul-{{ forloop.counter0 }}'>
                             <span class='icon is-small is-left'><i class='fas fa-folder'></i></span>
-                            <span>{{ directory }}</span>
+                            <span>{{ directory.name }}</span> <span class="is-size-7">by {{ directory.user }}</span>
                         </a>
                         <ul id='ul-{{ forloop.counter0 }}'>
                             {% for audio in directory_audios %}

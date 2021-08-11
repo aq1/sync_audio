@@ -49,5 +49,12 @@
                 <span class="icon is-small is-left"><i class="fas fa-sign-out-alt"></i></span><span class="is-hidden-mobile"> Logout</span>
             </a>
         </div>
+    {% else %}
+                <div class="has-text-centered">
+            <a href="{% url 'accounts:login' %}">
+                <span class="icon is-small is-left"><i
+                        class="fas fa-user"></i></span><span> Login </span>
+            </a>
+        </div>
     {% endif %}
 </nav>

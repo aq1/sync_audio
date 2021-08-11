@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from ..models import Directory
-from .utils import get_sorted_user_audios
+from .utils import get_sorted_audios
 
 
 class DirectoryForm(forms.ModelForm):
@@ -23,7 +23,7 @@ def directory(request):
         request,
         'audios/directory.html',
         context={
-            'audios': get_sorted_user_audios(request.user),
+            'audios': get_sorted_audios(),
         },
     )
 
@@ -43,7 +43,7 @@ def directory_submit(request):
         request,
         'audios/directory.html',
         context={
-            'audios': get_sorted_user_audios(request.user),
+            'audios': get_sorted_audios(),
         },
         status=400,
     )
