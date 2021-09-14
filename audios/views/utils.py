@@ -4,8 +4,11 @@ from ..models import Audio
 from ..models import Directory
 
 
-def get_sorted_audios():
+def get_sorted_audios(directory_id=None):
     directories = Directory.objects.all()
+    if directory_id:
+        directories = directories.filter(id=directory_id)
+
     audios = {
         directory: []
         for directory in directories
@@ -13,6 +16,8 @@ def get_sorted_audios():
 
     db_audios: models.QuerySet[Audio] = Audio.objects.select_related(
         'directory',
+    ).filter(
+        directory_id__in=directories.values_list('id', flat=True),
     ).order_by(
         'directory',
         'name',

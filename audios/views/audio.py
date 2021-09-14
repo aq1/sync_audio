@@ -10,8 +10,6 @@ def audio(request, audio_id, audio_slug):
     if not _audio:
         return redirect(reverse('index'))
 
-    audios = []
-    if request.user.is_authenticated:
-        audios = get_sorted_audios()
+    audios = get_sorted_audios(_audio.directory_id)
 
     return render(request, 'audios/audio.html', {'audio': _audio, 'audios': audios})
