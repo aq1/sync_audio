@@ -8,7 +8,7 @@
 {% endblock %}
 {% block meta_description %}
     {{ block.super }} - {{ audio.name }}
-    {% endblock %}
+{% endblock %}
 
 {% block head %}
     <script src="https://unpkg.com/wavesurfer.js"></script>
@@ -28,8 +28,16 @@
                 </div>
             </div>
             <div id="controls" class="is-hidden">
-                <div class="columns is-centered has-text-centered">
+                <div class="columns is-centered is-gapless is-mobile has-text-centered">
                     <div class="column is-4">
+                        <a {% if previous %}
+                            href="{% url 'audios:audio' audio_id=previous.id audio_slug=previous.slug %}" {% endif %}>
+                                <button class="button is-danger is-large is-inverted" {% if not previous %}disabled{% endif %}>
+                                    <span class="icon is-small is-left">
+                                        <i class="fas fa-backward"></i>
+                                    </span>
+                                </button>
+                            </a>
                         <button class="button is-danger is-large is-inverted" onclick="skip(-1)">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-undo-alt"></i>
@@ -46,9 +54,17 @@
                                 <i class="fas fa-redo-alt"></i>
                             </span>
                         </button>
+                        <a {% if next %}
+                            href="{% url 'audios:audio' audio_id=next.id audio_slug=next.slug %}" {% endif %}>
+                            <button class="button is-danger is-large is-inverted" {% if not next %}disabled{% endif %}>
+                                    <span class="icon is-small is-left">
+                                        <i class="fas fa-forward"></i>
+                                    </span>
+                            </button>
+                        </a>
                     </div>
                 </div>
-                <div class="columns is-centered">
+                <div class="columns is-gapless is-centered">
                     <div class="column is-4" style="text-align: center">
                         <button class="button is-primary is-large is-inverted" onclick="changeSpeed(-0.1)">
                             <span class="icon is-small is-left">
@@ -91,7 +107,7 @@
                 const audioId = location.pathname.replace('/', '').split('-')[0];
                 conn = new WebSocket(`wss://${location.host}/ws/${audioId}/`);
                 conn.onmessage = function (evt) {
-                    let data = JSON.parse(evt.data)
+                    const data = JSON.parse(evt.data)
                     if (data.clientId === _id) {
                         return;
                     }
@@ -108,7 +124,7 @@
             }
         };
 
-        let wavesurfer = WaveSurfer.create({
+        const wavesurfer = WaveSurfer.create({
             container: '#waveform',
             backend: 'MediaElement',
             normalize: true,
@@ -128,18 +144,18 @@
             document.getElementById('loading').classList.toggle('is-hidden');
         })
 
-        let play = () => {
+        const play = () => {
             wavesurfer.playPause();
             sendMessage();
         };
 
-        let skip = (value) => {
+        const skip = (value) => {
             const step = (wavesurfer.getDuration() / 10);
             wavesurfer.skip(step * Math.sign(value));
             sendMessage();
         };
 
-        let changeSpeed = (value) => {
+        const changeSpeed = (value) => {
             value = wavesurfer.getPlaybackRate() + value;
             if (value < 0.5 || value > 1.5) {
                 return;
@@ -147,19 +163,19 @@
             setSpeed(value);
         };
 
-        let setSpeed = (value) => {
+        const setSpeed = (value) => {
             value = Number(value.toFixed(1));
             wavesurfer.setPlaybackRate(value);
             document.getElementById('speed').innerText = `${value}`;
             sendMessage();
         };
 
-        let volume = (value) => {
+        const volume = (value) => {
             wavesurfer.setVolume(value);
         };
 
         const volumeInput = document.getElementById('volume');
-        let addVolume = (value) => {
+        const addVolume = (value) => {
             value = Math.min(1, Math.max(0, wavesurfer.getVolume() + value));
             wavesurfer.setVolume(value);
             volumeInput.value = value;
@@ -178,9 +194,9 @@
 
         document.getElementById('waveform').onclick = () => sendMessage();
 
-        let blurButtons = () => {
+        const blurButtons = () => {
             const buttons = document.getElementsByTagName('button');
-            for (let button of buttons) {
+            for (const button of buttons) {
                 button.blur();
             }
         };
