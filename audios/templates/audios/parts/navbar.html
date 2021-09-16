@@ -31,26 +31,38 @@
 
 
 <nav class="navbar is-danger">
-    <div class="has-text-centered"><a href="{% url 'audios:index' %}">Listen Together</a></div>
+    <div class="has-text-centered is-hidden-mobile">
+        <a href="{% url 'audios:index' %}">Listen Together</a>
+    </div>
+    <div class="has-text-centered" onclick="setSync()">
+        <a>
+            <label class="checkbox">
+            <input type="checkbox" id="syncCheckbox">
+            <span>Sync</span><span class="is-hidden-mobile"> with others</span>
+        </label>
+        </a>
+    </div>
     {% if request.user.is_authenticated %}
         <div class="has-text-centered">
             <a href="{% url 'audios:index' %}">
                 <span class="icon is-small is-left"><i
-                        class="fas fa-user"></i></span><span> {{ request.user.username }}</span>
+                        class="fas fa-user"></i></span><span class="is-hidden-mobile"> {{ request.user.username }}</span>
             </a>
         </div>
         <div class="has-text-centered">
             <a href="{% url 'audios:upload' %}">
-                <span class="icon is-small is-left"><i class="fas fa-plus-square"></i></span><span class="is-hidden-mobile"> Upload</span>
+                <span class="icon is-small is-left"><i class="fas fa-plus-square"></i></span><span
+                    class="is-hidden-mobile"> Upload</span>
             </a>
         </div>
         <div class="has-text-centered right">
             <a href="{% url 'accounts:logout' %}">
-                <span class="icon is-small is-left"><i class="fas fa-sign-out-alt"></i></span><span class="is-hidden-mobile"> Logout</span>
+                <span class="icon is-small is-left"><i class="fas fa-sign-out-alt"></i></span><span
+                    class="is-hidden-mobile"> Logout</span>
             </a>
         </div>
     {% else %}
-                <div class="has-text-centered">
+        <div class="has-text-centered">
             <a href="{% url 'accounts:login' %}">
                 <span class="icon is-small is-left"><i
                         class="fas fa-user"></i></span><span> Login </span>
@@ -58,3 +70,14 @@
         </div>
     {% endif %}
 </nav>
+
+<script>
+    const syncCheckbox = document.getElementById('syncCheckbox');
+    const key = 'syncWithOthers';
+
+    syncCheckbox.checked = JSON.parse(window.localStorage[key] || 'true');
+
+    const setSync = function () {
+        window.localStorage[key] = JSON.stringify(syncCheckbox.checked);
+    }
+</script>
