@@ -109,7 +109,7 @@
         let conn;
         const _id = Math.round(Math.random() * 100000);
 
-        const createConnection = function () {
+        const createConnection = () => {
             const audioId = location.pathname.replace('/', '').split('-')[0];
             const protocol = location.href === 'https' ? 'wss' : 'ws';
             conn = new WebSocket(`${protocol}://${location.host}/ws/${audioId}/`);
