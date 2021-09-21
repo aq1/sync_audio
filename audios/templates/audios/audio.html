@@ -111,7 +111,7 @@
 
         const createConnection = () => {
             const audioId = location.pathname.replace('/', '').split('-')[0];
-            const protocol = location.href === 'https' ? 'wss' : 'ws';
+            const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
             conn = new WebSocket(`${protocol}://${location.host}/ws/${audioId}/`);
             conn.onmessage = function (evt) {
                 const data = JSON.parse(evt.data)
