@@ -3,8 +3,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import path, include
+from django.views.decorators.csrf import csrf_exempt
 
 
+@csrf_exempt
 def webhook(request):
     with open('log.txt', 'a') as f:
         f.write(f'{request.POST}\n\n{request.body}\n\n')
