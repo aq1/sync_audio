@@ -3,9 +3,16 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+
+def webhook(request):
+    with open('log.txt', 'a') as f:
+        f.write(f'{request.POST}\n\n{request.body}\n\n')
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls', namespace='accounts')),
+    path('webhook', webhook),
     path('', include('audios.urls', namespace='audios')),
 ]
 
