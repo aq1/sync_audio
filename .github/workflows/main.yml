@@ -15,7 +15,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         script: |
-            app_name=$app_name
+            app_name=sync_audio
             mkdir -p /apps/$app_name/
             cd /apps/$app_name/
             git pull
