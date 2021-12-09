@@ -31,7 +31,7 @@
                     <div class="field file is-large has-name">
                         <label class="file-label" style="width: 100%">
                             <input class="file-input" id="audioFileInput" type="file" name="audio" accept="audio/*"
-                                   required>
+                                   required multiple>
                             <span class="file-cta">
                           <span class="file-icon">
                             <i class="fas fa-upload"></i>
@@ -71,7 +71,11 @@
             fileInput.onchange = () => {
                 if (fileInput.files.length > 0) {
                     const fileName = document.querySelector('#fileName');
-                    fileName.textContent = fileInput.files[0].name;
+                    const names = [];
+                    for (let index = 0; index < fileInput.files.length; index++) {
+                        names.push(fileInput.files[index].name);
+                    }
+                    fileName.textContent = names.join(', ');
                 }
             }
         })

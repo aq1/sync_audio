@@ -33,26 +33,46 @@ def upload(request):
 @login_required
 @require_http_methods(['POST'])
 def upload_submit(request):
-    form = AudioForm(request.POST, request.FILES)
-    form.fields['directory'].queryset = Directory.objects.filter(user=request.user)
+    files = request.FILES.getlist('audio')
+    _forms = []
+    _audio = None
 
-    if form.is_valid():
+    for _file in files:
+        form = AudioForm(request.POST, {'audio': _file})
+        form.fields['directory'].queryset = Directory.objects.filter(user=request.user)
+
+        if not form.is_valid():
+            return render(
+                request,
+                'audios/upload.html',
+                context={
+                    'directories': get_sorted_user_directories(request.user),
+                    'errors': form.errors,
+                },
+                status=400,
+            )
+        else:
+            _forms.append(form)
+
+    if not _forms:
+        return render(
+            request,
+            'audios/upload.html',
+            context={
+                'directories': get_sorted_user_directories(request.user),
+                'errors': 'No files',
+            },
+            status=400,
+        )
+
+    for form in _forms:
         form.instance.user = request.user
         _audio = form.save()
-        return redirect(reverse(
-            'audios:audio',
-            kwargs={
-                'audio_slug': _audio.slug,
-                'audio_id': _audio.id,
-            },
-        ))
 
-    return render(
-        request,
-        'audios/upload.html',
-        context={
-            'directories': get_sorted_user_directories(request.user),
-            'errors': form.errors,
+    return redirect(reverse(
+        'audios:audio',
+        kwargs={
+            'audio_slug': _audio.slug,
+            'audio_id': _audio.id,
         },
-        status=400,
-    )
+    ))
